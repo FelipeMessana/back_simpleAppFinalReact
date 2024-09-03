@@ -1,0 +1,37 @@
+@baseUrl = http://localhost:3000
+
+### Register User (as Admin)
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "role": "admin"
+}
+
+### Login
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin123"
+}
+
+### Add Product
+POST {{baseUrl}}/product
+Authorization: Bearer <your-token-here>
+Content-Type: application/json
+
+{
+    "name": "Camiseta Deportiva",
+    "description": "Camiseta de alta calidad",
+    "price": 25.99,
+    "stock": 100
+}
+
+### Delete Product
+DELETE {{baseUrl}}/product/1
+Authorization: Bearer <your-token-here>
