@@ -21,3 +21,9 @@ CREATE TABLE orders (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+ALTER TABLE products ADD COLUMN category_id INT, ADD FOREIGN KEY (category_id) REFERENCES categories(id);
