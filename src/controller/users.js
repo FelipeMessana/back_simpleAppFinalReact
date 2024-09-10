@@ -35,29 +35,52 @@ export const logIn = async (req, res) => {
   }
 };
 
+const userExist = async (cnn, tabla, atributo, valor) => {
+  try {
+    const [row] = await cnn.query(
+      `SELECT * FROM ${tabla} WHERE ${atributo}=?`,
+      [valor]
+    );
+    return row.length > 0;
+  } catch (error) {
+    console.log("userExist", error);
+  }
+};
+
 export const createUsers = async (req, res) => {
   try {
     const cnn = await connect();
-    const { username, email, password, role } = req.body;
+    const { username, email, password } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Verificar si el username ya existe
+    const usernameExist = await userExist(cnn, "users", "username", username);
+    // Verificar si el email ya existe
+    const emailExist = await userExist(cnn, "users", "email", email);
 
-    const query =
-      "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)";
-    const [result] = await cnn.query(query, [
-      username,
-      email,
-      hashedPassword,
-      role || "user",
-    ]);
-
-    if (result.affectedRows === 1) {
+    if (usernameExist || emailExist) {
       return res.json({
-        message: "Usuario creado exitosamente",
-        success: true,
+        message: "El usuario o correo ya existe",
+        success: false,
       });
     } else {
-      return res.status(500).json({ message: "No se pudo crear el usuario" });
+      // Si no existen duplicados, crear el usuario
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const query =
+        "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+      const [result] = await cnn.query(query, [
+        username,
+        email,
+        hashedPassword,
+      ]);
+
+      if (result.affectedRows === 1) {
+        return res.json({
+          message: "Usuario creado exitosamente",
+          success: true,
+        });
+      } else {
+        return res.status(500).json({ message: "No se pudo crear el usuario" });
+      }
     }
   } catch (error) {
     console.log("create user", error.message);

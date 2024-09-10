@@ -11,7 +11,7 @@ import {
 const routerUsers = Router();
 
 routerUsers.post("/login", logIn);
-routerUsers.post("/register", createUsers);
+routerUsers.post("/user/usersp", createUsers);
 routerUsers.post("/product", auth, adminAuth, addProduct);
 routerUsers.delete("/product/:id", auth, adminAuth, deleteProduct);
 

@@ -7,9 +7,12 @@ exports.signupUser = async (req, res) => {
     const { username, email, password } = req.body;
     const user = new User({ username, email, password });
     await user.save();
-    res.status(201).json({ message: "Usuario registrado exitosamente" });
+    res
+      .status(201)
+      .json({ message: "Usuario registrado exitosamente", success: true });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error en signupUser:", error.message);
+    res.status(500).json({ message: "Error del servidor", success: false });
   }
 };
 
