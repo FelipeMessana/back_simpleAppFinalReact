@@ -21,9 +21,15 @@ export const logIn = async (req, res) => {
 
     if (isPasswordValid) {
       const token = getToken({ id: user.id, role: user.role });
-      return res
-        .status(200)
-        .json({ success: true, message: "Login exitoso", token });
+      return res.status(200).json({
+        success: true,
+        message: "Login exitoso",
+        token,
+        user: {
+          id: user.id,
+          role: user.role,
+        },
+      });
     } else {
       return res
         .status(401)
